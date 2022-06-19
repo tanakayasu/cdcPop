@@ -52,3 +52,43 @@ pcen2020[,PSTCO := ifelse(CO_FIPS < 10,
                           paste0(ST_FIPS, "0", CO_FIPS)) %>% as.numeric]
 
 pcen2020[,.N, PSTCO]
+
+countyName.dt <- fread("countyName	CO_FIPS
+                        Baker	1
+                        Benton	3
+                        Clackamas	5
+                        Clatsop	7
+                        Columbia	9
+                        Coos	11
+                        Crook	13
+                        Curry	15
+                        Deschutes	17
+                        Douglas	19
+                        Gilliam	21
+                        Grant	23
+                        Harney	25
+                        Hood River	27
+                        Jackson	29
+                        Jefferson	31
+                        Josephine	33
+                        Klamath	35
+                        Lake	37
+                        Lane	39
+                        Lincoln	41
+                        Linn	43
+                        Malheur	45
+                        Marion	47
+                        Morrow	49
+                        Multnomah	51
+                        Polk	53
+                        Sherman	55
+                        Tillamook	57
+                        Umatilla	59
+                        Union	61
+                        Wallowa	63
+                        Wasco	65
+                        Washington	67
+                        Wheeler	69
+                        Yamhill	71")
+
+pcen2020[countyName.dt, on = "CO_FIPS"]
