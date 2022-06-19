@@ -1,5 +1,3 @@
-#Hello world!
-
 require(magrittr)
 require(haven)
 require(data.table)
