@@ -34,12 +34,14 @@ pcen2020 <- unzip(temporaryFile, fileNameList) %>%
   as.data.table %>% 
   .[ST_FIPS == 41]
 
+# rm(temporaryFile)
+
 # cbind(male = seq(1, 8, 2), female = seq(2, 8, 2))# %>% as.data.table
 # pcen2020 <- pcen2020[ST_FIPS == 41]
 pcen2020[RACESEX %in% seq(1, 8, 2), sex := "Male"]
 pcen2020[RACESEX %in% seq(2, 8, 2), sex := "Female"]
 
-race4dt <- fread("race4, RaceName 
+race4dt <- fread("race4, raceName 
                  1, White 
                  2, Black 
                  3, American Indian or Alaska Native 
@@ -91,4 +93,8 @@ countyName.dt <- fread("countyName	CO_FIPS
                         Wheeler	69
                         Yamhill	71")
 
-pcen2020[countyName.dt, on = "CO_FIPS"]
+pcen2020 <- pcen2020[countyName.dt, on = "CO_FIPS"]
+pcen2020[hisp == 2, raceName := "Hispanic"]
+# pcen2020[,.SD, .SDcols = "POP2020"]
+pcen2020[,.(pop2020 = sum(POP2020)), by = c("PSTCO", "raceName")] %>% summary#[,.N, raceName]
+pcen2020[,.N, raceName]
