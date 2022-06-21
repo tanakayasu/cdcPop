@@ -99,6 +99,13 @@ pcen2020[hisp == 2, raceName := "Hispanic"]
 # pcen2020[,.(pop2020 = sum(POP2020)), by = c("PSTCO", "raceName")] %>% summary#[,.N, raceName]
 # pcen2020[,.N, raceName]
 
+year.dt <- cbind(grep("20", names(pcen2020), value = T), seq(2009, 2020, 1)) %>%
+  as.data.table
+setnames(year.dt, names(year.dt), c("yearCol", "Year"))
+year.dt <- year.dt[]
+# grep("[^(?=.*20)(?!.*_)]", names(pcen2020), value = T, perl = T)
+# grep("[201|202]", names(pcen2020), value = T)
+
 pcen2020.long <- melt(pcen2020,
                       id.vars = c("age", "sex", "raceName", "PSTCO", "countyName"),
                       measure.vars = grep("POP20", names(pcen2020), value = T),
