@@ -42,7 +42,7 @@ pcen2020[RACESEX %in% seq(2, 8, 2), sex := "Female"]
 
 race4dt <- fread("race4, raceName 
                  1, White 
-                 2, Black 
+                 2, Black or African American 
                  3, American Indian or Alaska Native 
                  4, Asian or Pacific Islander")
 
@@ -101,13 +101,15 @@ pcen2020[hisp == 2, raceName := "Hispanic"]
 
 year.dt <- cbind(grep("20", names(pcen2020), value = T), seq(2009, 2020, 1)) %>%
   as.data.table
-setnames(year.dt, names(year.dt), c("yearCol", "Year"))
-year.dt <- year.dt[]
-# grep("[^(?=.*20)(?!.*_)]", names(pcen2020), value = T, perl = T)
-# grep("[201|202]", names(pcen2020), value = T)
+
+setnames(year.dt, names(year.dt), c("estimateYear", "Year"))
+
+year.dt <- year.dt[Year > 2010]
+
 
 pcen2020.long <- melt(pcen2020,
                       id.vars = c("age", "sex", "raceName", "PSTCO", "countyName"),
-                      measure.vars = grep("POP20", names(pcen2020), value = T),
+                      measure.vars = year.dt[,estimateYear],
                       variable.name = "estimateYear",
                       value.name = "population")
+pcen2020.long <- pcen2020.long[year.dt, on = "estimateYear"]
