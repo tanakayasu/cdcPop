@@ -27,12 +27,13 @@ temporaryFile <- tempfile()
 fileNameList <- as.character(unzip(temporaryFile, list = T)$Name)
 fileNameList %>% print()
 
-pcen2020 <- unzip(temporaryFile, fileNameList) %>% 
+pcen2020 <- unz(temporaryFile, fileNameList) %>% 
   read_sas %>% 
   as.data.table %>% 
   .[ST_FIPS == 41]
 
-# rm(temporaryFile)
+unlink(temporaryFile)
+
 
 # cbind(male = seq(1, 8, 2), female = seq(2, 8, 2))# %>% as.data.table
 # pcen2020 <- pcen2020[ST_FIPS == 41]
@@ -93,6 +94,13 @@ countyName.dt <- fread("countyName	CO_FIPS
 
 pcen2020 <- pcen2020[countyName.dt, on = "CO_FIPS"]
 pcen2020[hisp == 2, raceName := "Hispanic"]
+
 # pcen2020[,.SD, .SDcols = "POP2020"]
-pcen2020[,.(pop2020 = sum(POP2020)), by = c("PSTCO", "raceName")] %>% summary#[,.N, raceName]
-pcen2020[,.N, raceName]
+# pcen2020[,.(pop2020 = sum(POP2020)), by = c("PSTCO", "raceName")] %>% summary#[,.N, raceName]
+# pcen2020[,.N, raceName]
+
+pcen2020.long <- melt(pcen2020,
+                      id.vars = c("age", "sex", "raceName", "PSTCO", "countyName"),
+                      measure.vars = grep("POP20", names(pcen2020), value = T),
+                      variable.name = "estimateYear",
+                      value.name = "population")
