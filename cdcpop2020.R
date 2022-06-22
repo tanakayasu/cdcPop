@@ -93,7 +93,7 @@ countyName.dt <- fread("countyName	CO_FIPS
                         Yamhill	71")
 
 pcen2020 <- pcen2020[countyName.dt, on = "CO_FIPS"]
-pcen2020[hisp == 2, raceName := "Hispanic"]
+pcen2020[hisp == 2, raceName := "Hispanic or Latino"]
 
 # pcen2020[,.SD, .SDcols = "POP2020"]
 # pcen2020[,.(pop2020 = sum(POP2020)), by = c("PSTCO", "raceName")] %>% summary#[,.N, raceName]
