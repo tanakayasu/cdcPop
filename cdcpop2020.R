@@ -113,3 +113,16 @@ pcen2020.long <- melt(pcen2020,
                       variable.name = "estimateYear",
                       value.name = "population")
 pcen2020.long <- pcen2020.long[year.dt, on = "estimateYear"]
+
+
+# add age groups
+ageGroup <- c("1-4 years", "5-9 years", "10-14 years", "15-19 years",
+              "20-24 years", "25-34 years", "35-44 years", "45-54 years",
+              "55-64 years", "65-74 years", "75-84 years", "85+ years")
+
+cutAge <- c(0,
+            seq(4, 24, 5),
+            seq(24, 84, 10),
+            Inf)
+
+pcen2020[, ageGroup := age |> cut(breaks = cutAge |> unique(), ageGroup)]
