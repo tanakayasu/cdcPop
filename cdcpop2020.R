@@ -52,7 +52,7 @@ pcen2020[,PSTCO := ifelse(CO_FIPS < 10,
                           paste0(ST_FIPS, "00", CO_FIPS),
                           paste0(ST_FIPS, "0", CO_FIPS)) %>% as.numeric]
 
-pcen2020[,.N, PSTCO]
+# pcen2020[,.N, PSTCO]
 
 countyName.dt <- fread("countyName	CO_FIPS
                         Baker	1
@@ -93,7 +93,6 @@ countyName.dt <- fread("countyName	CO_FIPS
                         Yamhill	71")
 
 pcen2020 <- pcen2020[countyName.dt, on = "CO_FIPS"]
-pcen2020[hisp == 2, raceName := "Hispanic or Latino"]
 
 # pcen2020[,.SD, .SDcols = "POP2020"]
 # pcen2020[,.(pop2020 = sum(POP2020)), by = c("PSTCO", "raceName")] %>% summary#[,.N, raceName]
@@ -107,12 +106,12 @@ setnames(year.dt, names(year.dt), c("estimateYear", "Year"))
 year.dt <- year.dt[Year > 2010]
 
 
-pcen2020.long <- melt(pcen2020,
-                      id.vars = c("age", "sex", "raceName", "PSTCO", "countyName"),
-                      measure.vars = year.dt[,estimateYear],
-                      variable.name = "estimateYear",
-                      value.name = "population")
-pcen2020.long <- pcen2020.long[year.dt, on = "estimateYear"]
+# pcen2020.long <- melt(pcen2020,
+#                       id.vars = c("age", "sex", "raceName", "PSTCO", "countyName"),
+#                       measure.vars = year.dt[,estimateYear],
+#                       variable.name = "estimateYear",
+#                       value.name = "population")
+# pcen2020.long <- pcen2020.long[year.dt, on = "estimateYear"]
 
 
 # add age groups
@@ -126,3 +125,12 @@ cutAge <- c(0,
             Inf)
 
 pcen2020[, ageGroup := age |> cut(breaks = cutAge |> unique(), ageGroup)]
+
+
+# ethnicity change values in hisp
+# HISP Hispanic origin Numeric
+# 1=not Hispanic or Latino
+# 2=Hispanic or Latino
+
+pcen2020[,hisp := ifelse(hisp == 1, "not Hispanic or Latino", "Hispanic or Latino")]
+pcen2020[,.N, hisp]
